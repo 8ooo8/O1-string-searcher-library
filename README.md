@@ -2,6 +2,22 @@
 
 O(1) String Searcher provides a data structure which grants an **O(1)-time-complexity string search** but with an **O(n^2)-time-complexity string insertion**. One of its good fit scenarios is the chat history search function.
 
+## Build library
+
+1. Check Java version.
+    ```bash
+    java -version
+    ```
+1. Update Java if version below 11.
+1. Build the library with javac.
+    ```bash cd <O(1)-string-searcher-directory>
+    javac -d build --module-source-path . $(find instantstringsearcher.module -name "*.java") $(find junittest.module -name "*.java")
+    ```
+1. Run the Junit to test the library.
+    ```bash
+    java --module-path build -m junittest.module/github.eightoooeight.instantstringsearcher.junit.JUnitTestSuite
+    ```
+
 ## Alogrithm
 
 The alogrithm: 
@@ -36,5 +52,5 @@ Possible improvement:
 [MIT][MIT-license]
 
 [MIT-license]: LICENSE
-[class-diagram]: doc/class-diagram.png
-[trie-formation-figure]: doc/trie-formation.png
+[class-diagram]: docs/class-diagram.png
+[trie-formation-figure]: docs/trie-formation.png
