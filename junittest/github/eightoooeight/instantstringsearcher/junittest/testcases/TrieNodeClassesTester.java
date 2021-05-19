@@ -69,7 +69,7 @@ public class TrieNodeClassesTester extends TestCase {
     }
 
     private void _writeTrieNode(Function<String, ITrieNode> getNode, String nodeKeychain, String toWrite) {
-        ITrieNodeWriter nodeWriter = new TrieNodeWriter();
+        ITrieNodeWriter nodeWriter = TrieNodeWriter.getInstance();
         ITrieNode node = getNode.apply(nodeKeychain);
         nodeWriter.write(node, toWrite);
     }
