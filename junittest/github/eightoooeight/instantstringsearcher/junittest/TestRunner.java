@@ -11,7 +11,7 @@ public class TestRunner {
       Result result = JUnitCore.runClasses(JUnitTestSuite.class);
 
       for (Failure failure : result.getFailures()) {
-         System.out.println(failure.toString());
+         System.out.println(failure.toString() + "\n");
       }
 		
       System.out.println(result.wasSuccessful() ? "The testes were all successful." : "The testes failed");

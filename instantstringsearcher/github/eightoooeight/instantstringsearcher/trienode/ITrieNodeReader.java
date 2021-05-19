@@ -1,7 +1,8 @@
 package github.eightoooeight.instantstringsearcher.trienode;
 
 import github.eightoooeight.instantstringsearcher.trienode.ITrieNode;
+import java.util.List;
 
 public interface ITrieNodeReader {
-    public String read(ITrieNode node);
+    public List<String> read(ITrieNode node);
 }
