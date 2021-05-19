@@ -25,9 +25,9 @@ public class IoCClassTester extends TestCase {
 
     @Before
     public void setUp() {
-        _storagePath = ".";
-        _trieDirPath = _storagePath + "/build/data/trie/";
-        _rawDataFilepath = _storagePath + "/build/data/rawData.txt";
+        _storagePath = "./build/data";
+        _trieDirPath = _storagePath + "/trie/";
+        _rawDataFilepath = _storagePath + "/rawData.txt";
         FileDeleter.deleteDirIfExists(new File(_trieDirPath));
         FileDeleter.deleteFileIfExists(_rawDataFilepath);
     }
@@ -36,7 +36,7 @@ public class IoCClassTester extends TestCase {
     public void testIoC() {
         List<String> toInsert = Arrays.asList(new String[]{"Hi, this is Jack.", "Nice to meet you. I am Sarah.", "You are so pretty, Sarah."});
         
-        IInstantStringSearcher instantStringSearcher = new InstantStringSearcher();
+        IInstantStringSearcher instantStringSearcher = InstantStringSearcher.getInstance();
         instantStringSearcher.setStoragePath(_storagePath);
         toInsert.forEach(pieceToInsert -> instantStringSearcher.insertString(pieceToInsert));
         List<String> is_searchResult = instantStringSearcher.searchString("is");
@@ -47,8 +47,9 @@ public class IoCClassTester extends TestCase {
         assertEquals(is_searchResult.get(0), toInsert.get(0));
         assertEquals(is_searchResult.get(1), toInsert.get(0));
 
-        assertEquals(you_searchResult.size(), 1);
+        assertEquals(you_searchResult.size(), 2);
         assertEquals(you_searchResult.get(0), toInsert.get(1));
+        assertEquals(you_searchResult.get(1), toInsert.get(2));
 
         assertEquals(jack_searchResult.size(), 1);
         assertEquals(jack_searchResult.get(0), toInsert.get(0));
