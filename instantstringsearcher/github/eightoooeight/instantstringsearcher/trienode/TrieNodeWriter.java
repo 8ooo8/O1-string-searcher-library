@@ -14,15 +14,23 @@ public class TrieNodeWriter implements ITrieNodeWriter{
     }
 
     public synchronized void write(ITrieNode node, String toWrite) {
+        BufferedWriter writer = null;
         try {
             File nodeFile = node.getNode();
             nodeFile.getParentFile().mkdirs();
             nodeFile.createNewFile(); //create a new file if not exists
-            BufferedWriter writer = new BufferedWriter(new FileWriter(nodeFile, true));
+            writer = new BufferedWriter(new FileWriter(nodeFile, true));
             writer.write(toWrite + "\n");
-            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            Optional.ofNullable(writer).ifPresent(w -> {
+                try {
+                    w.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
         }
     }
 }
