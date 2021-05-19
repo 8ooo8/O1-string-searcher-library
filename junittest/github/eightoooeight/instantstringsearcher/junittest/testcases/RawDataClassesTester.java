@@ -35,7 +35,7 @@ public class RawDataClassesTester extends TestCase {
      * @return HashMap<data-ID, data-value>
      */
     private HashMap<String, String> _writeRawData(List<String> rawData) {
-        IRawDataWriter rawDataWriter = new RawDataWriter();
+        IRawDataWriter rawDataWriter = RawDataWriter.getInstance();
         rawDataWriter.setDataFilepath(_rawDataFilepath);
         HashMap<String, String> result = new HashMap<>();
         rawData.forEach(dataPiece -> result.put(rawDataWriter.write(dataPiece), dataPiece));
