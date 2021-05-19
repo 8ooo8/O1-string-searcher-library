@@ -62,7 +62,7 @@ public class TrieNodeClassesTester extends TestCase {
         }
 
         List<String> contentReadFromABNode = _readTrieNode(getNode, "AB");
-        assertEquals(toWriteToABNode1.size(), contentReadFromANode.size());
+        assertEquals(toWriteToABNode1.size(), contentReadFromABNode.size());
         for (int i = 0; i < toWriteToABNode1.size(); i++) {
             assertEquals(toWriteToABNode1.get(i), contentReadFromABNode.get(i));
         }
