@@ -11,11 +11,15 @@ O(1) String Searcher provides a data structure which grants an **O(1)-time-compl
 1. Update Java if version below 11.
 1. Build the library with javac.
     ```bash cd <O(1)-string-searcher-directory>
-    javac -d build --module-source-path . $(find instantstringsearcher.module -name "*.java") $(find junittest.module -name "*.java")
+    javac --module-path junittest/dependencies/junit-4.10.jar \
+        --add-modules junit \
+        --patch-module junit=junit-4.10.jar \
+        --module-source-path . $(find instantstringsearcher -name "*.java")  $(find junittest -name "*.java") \
+        -d build
     ```
 1. Run the Junit to test the library.
     ```bash
-    java --module-path build -m junittest.module/github.eightoooeight.instantstringsearcher.junit.JUnitTestSuite
+    java --module-path build:junittest/dependencies -m junittest/github.eightoooeight.instantstringsearcher.junittest.TestRunner
     ```
 
 ## Alogrithm
