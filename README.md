@@ -2,7 +2,17 @@
 
 O(1) String Searcher provides a data structure which grants an **O(1)-time-complexity string search** but with an **O(n^2)-time-complexity string insertion**. One of its good fit scenarios is the chat history search function.
 
-## Build String Searcher library
+## Table of content
+
+1. [Build library](#build-library)
+1. [Library Usage](#library-usage)
+1. [Alogrithm](#alogrithm)
+1. [Class diagram](#class-diagram)
+1. [Limitations and solutions](#limitations-and-solutions)
+1. [Reminder](#reminder)
+1. [License](#license)
+
+## Build library
 
 1. Check Java version.
     ```bash
@@ -22,6 +32,25 @@ O(1) String Searcher provides a data structure which grants an **O(1)-time-compl
     java --module-path build:junittest/dependencies -m junittest/github.eightoooeight.instantstringsearcher.junittest.TestRunner
     ```
 
+## Library Usage
+
+1. Import the library
+    ```java
+    import github.eightoooeight.instantstringsearcher.*;
+    ```
+1. Create an instance of InstantStringSearcher
+    ```java
+    IInstantStringSearcher instantStringSearcher = InstantStringSearcher.getInstance();
+    ```
+1. Insert strings
+    ```java
+    instantStringSearcher.insertString(toInsert);
+    ```
+1. Search strings
+    ```java
+    <List>String searchResult = instantStringSearcher.searchtString(strToSearch);
+    ```
+
 ## Alogrithm
 
 The alogrithm: 
@@ -33,23 +62,27 @@ The alogrithm:
 1. An O(1) method is provided to locate the node file with a specified keychain.
 1. May only load the node file that is responsible for the search result, i.e. no need to load the whole trie.
 
-Consider that this string searcher is particularly useful only when the string amount is too massive, this library is designed to save the trie into the persistent storage and to be able to load only a specified node in response to the string search. Therefore, the RAM/swapping will not be overwhelmed and a quick node loading can be guaranteed.
+Consider that this string searcher is particularly useful only when the string amount is too massive, this library is designed to save the trie into the persistent storage and to be able to load only a specified node in response to the string search, so that the RAM/swapping will not be overwhelmed and a quick node loading can be guaranteed.
 
 ## Class diagram
 
 ![Class diagram][class-diagram]
 
-## Limitation and possible improvement
+## Limitations and solutions
 
-Limitation:
+Limitations:
 
 1. In this library, the node file names are the node keychains. Consequently, it will not be able to handle the strings with characters invalid to be a part of the filenames.
 1. In this library, the node file names are the node keychains. Consequently, it will not be able to handle lengthy strings due to the filepath and filename length limitation from the filesystems, e.g. maximum 255 filename length on EXT4 on Linux.
 
-Possible improvement:
+Solutions:
 
 1. Modify the TrieNodeAndFilepathMapper class to resolve the invalid filename character problem.
-1. On the top of the library, add a layer to deal with the above 2 limitations.
+1. Add a dictionary layer between the nodes and the files to cope with the above 2 limitations.
+
+## Reminder
+
+Please note that this library is case-sensitive and does not remove the duplicate search result, e.g. it returns two "eye" upon a search of "e". If case-insensitiveness or distinct search result is expected, a post processing of the search result is needed.
 
 ## License
 
