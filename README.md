@@ -1,8 +1,8 @@
-# O(1) String Searcher
+# O(1) String Searcher Library
 
 O(1) String Searcher provides a data structure which grants an **O(1)-time-complexity string search** but with an **O(n^2)-time-complexity string insertion**. One of its good fit scenarios is the chat history search function.
 
-## Build library
+## Build String Searcher library
 
 1. Check Java version.
     ```bash
