@@ -47,7 +47,7 @@ public class InstantStringSearcher implements IInstantStringSearcher{
             }
         });
     }
-    public List<String> searchString(String searchStr) {
+    public synchronized List<String> searchString(String searchStr) {
         ITrieNode nodeWithSearchResult = new TrieNode();
         nodeWithSearchResult.init(searchStr, _mapper);
         List<String> rawDataIDs = _nodeReader.read(nodeWithSearchResult);
