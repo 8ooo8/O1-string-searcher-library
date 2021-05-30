@@ -18,7 +18,7 @@ import java.util.*;
 import java.util.stream.*;
 import java.util.function.*;
 
-public class IoCClassTester extends TestCase {
+public class StringSearcherReadWriteTester extends TestCase {
     protected static String _storagePath;
     protected static String _trieDirPath;
     protected static String _rawDataFilepath;
@@ -28,16 +28,36 @@ public class IoCClassTester extends TestCase {
         _storagePath = "./build/data";
         _trieDirPath = _storagePath + "/trie/";
         _rawDataFilepath = _storagePath + "/rawData.txt";
-        FileDeleter.deleteDirIfExists(new File(_trieDirPath));
-        FileDeleter.deleteFileIfExists(_rawDataFilepath);
     }
 
     @Test
-    public void testIoC() {
+    public void testO1StringSearcher() {
+        IInstantStringSearcher instantStringSearcher = O1StringSearcher.getInstance();
+        instantStringSearcher.setStoragePath(_storagePath);
+        _testInstantStringSearcher(instantStringSearcher);
+    }
+
+    @Test
+    public void testAsyncO1StringSearcher() {
+        IInstantStringSearcher instantStringSearcher = AsyncO1StringSearcher.getInstance();
+        instantStringSearcher.setStoragePath(_storagePath);
+        _testInstantStringSearcher(instantStringSearcher);
+    }
+
+    @Test
+    public void testImprovedSyncStringSearcher() {
+        IInstantStringSearcher baseStringSearcher = AsyncO1StringSearcher.getInstance();
+        IInstantStringSearcher instantStringSearcher = ImprovedSyncStringSearcher.getInstance(baseStringSearcher);
+        instantStringSearcher.setStoragePath(_storagePath);
+        _testInstantStringSearcher(instantStringSearcher);
+    }
+
+    private void _testInstantStringSearcher(IInstantStringSearcher instantStringSearcher) {
+        FileDeleter.deleteDirIfExists(new File(_trieDirPath));
+        FileDeleter.deleteFileIfExists(_rawDataFilepath);
+
         List<String> toInsert = Arrays.asList(new String[]{"Hi, this is Jack.", "Nice to meet you. I am Sarah.", "You are so pretty, Sarah."});
         
-        IInstantStringSearcher instantStringSearcher = InstantStringSearcher.getInstance();
-        instantStringSearcher.setStoragePath(_storagePath);
         toInsert.forEach(pieceToInsert -> instantStringSearcher.insertString(pieceToInsert));
         List<String> is_searchResult = instantStringSearcher.searchString("is");
         List<String> you_searchResult = instantStringSearcher.searchString("you");

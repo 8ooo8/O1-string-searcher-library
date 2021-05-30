@@ -10,7 +10,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
     RawDataClassesTester.class,
     TrieNodeClassesTester.class,
-    IoCClassTester.class
+    InstantStringSearcherTester.class,
+    ImprovedSyncStringSearcherSyncTester.class
 })
 
 public class JUnitTestSuite {   
