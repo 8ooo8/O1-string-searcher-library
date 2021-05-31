@@ -5,8 +5,8 @@ import java.util.*;
 import github.eightoooeight.instantstringsearcher.rawdata.*;
 import github.eightoooeight.instantstringsearcher.trienode.*;
 
-public class InstantStringSearcher implements IInstantStringSearcher{
-    protected static InstantStringSearcher _this;
+public class O1StringSearcher implements IInstantStringSearcher{
+    protected static O1StringSearcher _this;
     protected String _storagePath;
     protected ITrieNodeAndFilepathMapper _mapper;
     protected ITrieNodeReader _nodeReader;
@@ -14,15 +14,15 @@ public class InstantStringSearcher implements IInstantStringSearcher{
     protected IRawDataReader _rawDataReader;
     protected IRawDataWriter _rawDataWriter;
 
-    private InstantStringSearcher(){
+    private O1StringSearcher(){
         _mapper = new TrieNodeAndFilepathMapper();
         _nodeReader = new TrieNodeReader();
         _rawDataReader = new RawDataReader();
         _nodeWriter = TrieNodeWriter.getInstance();
         _rawDataWriter = RawDataWriter.getInstance();
     }
-    public static InstantStringSearcher getInstance() {
-        return Optional.ofNullable(_this).orElseGet(() -> { _this = new InstantStringSearcher(); return _this; });
+    public static O1StringSearcher getInstance() {
+        return Optional.ofNullable(_this).orElseGet(() -> { _this = new O1StringSearcher(); return _this; });
     }
 
     public void setStoragePath(String storagePath) {
