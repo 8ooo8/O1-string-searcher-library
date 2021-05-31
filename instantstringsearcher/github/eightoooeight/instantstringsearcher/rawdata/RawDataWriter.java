@@ -14,25 +14,18 @@ public class RawDataWriter implements IRawDataWriter{
 
     public void setDataFilepath(String dataFilepath) { _dataFilepath = dataFilepath; }
     public String write(String toWrite) {
-        BufferedWriter writer = null;
         String dataID = null;
         File dataFile = new File(_dataFilepath);
         try {
             dataFile.getParentFile().mkdirs();
             dataFile.createNewFile();
-            writer = new BufferedWriter(new FileWriter(dataFile, true));
-            dataID = "" + dataFile.length();
-            writer.write(toWrite);
+            try ( BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile, true)); ) {
+                dataID = "" + dataFile.length();
+                writer.write(toWrite);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            Optional.ofNullable(writer).ifPresent(w -> {
-                try {
-                    w.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
             dataID += "-" + dataFile.length();
             return dataID;
         }
