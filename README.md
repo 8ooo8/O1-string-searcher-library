@@ -65,6 +65,8 @@ so that the RAM/swapping will not be overwhelmed and a quick node loading can be
 
 ![Class diagram][class-diagram]
 
+**Create an object of the class which implements [IInstantStringSearcher][i-instant-string-searcher-java] to use this library, e.g. [O1StringSearcher][o1-string-searcher-java], [ImprovedSyncStringSearcher][improved-sync-string-searcher-java].**
+
 ## The O(1)-time-complexity variation
 
 There are various possilbe implementations of the above [algorithm](#algorithm) and in this library, one of the O(1)-variations is implemented.
@@ -96,6 +98,8 @@ This variation grants an absolute O(1) time complexity but with a higher space c
         1. The string IDs are in form of \<string-start-position\>-\<string-end-position\>, where the string-start-position refers to the starting position of its associated string in rawData.txt, and similar for the string-end-position.
         1. Using random access to read rawData.txt starting from the string-start-position to the string-end-position to retrieve the string, which gives an "O(1)" time complexity (not absolutely O(1) as the reading speed depends on the persistent storage fragmentation).
 1. Check [O1StringSearcher.java][o1-string-searcher-java] for the details.
+    1. **[O1StringSearcher][o1-string-searcher-java] is a class implementing [IInstantStringSearcher][i-instant-string-searcher-java].**
+    1. **[O1StringSearcher][o1-string-searcher-java] gives an O(1)-time-complexity string search.**
 
 **The limitations of the O(1)-variation 2**:
 
@@ -111,7 +115,7 @@ This variation grants an absolute O(1) time complexity but with a higher space c
 
 Synchronization:
 
-1. May cocurrently READ the SAME node file.
+1. May concurrently READ the SAME node file.
 1. May NOT concurrently WRITE the SAME node file.
 1. May NOT concurrently READ and WRITE the SAME node file.
 
@@ -122,7 +126,8 @@ Implementation:
 1. A read write lock is maintained for each node file.
 1. The locks not in use will be removed in a thread-safe way to avoid a memory leakage.
 1. Check [ImprovedSyncStringSearcher.java][improved-sync-string-searcher-java] for the details.
-    1. **[ImprovedSyncStringSearcher.java][improved-sync-string-searcher-java] is a wrapper class that wraps another [IInstantStringSearcher][i-instant-string-searcher-java] object and on top of it, adds a synchronization mechanism.**
+    1. **[ImprovedSyncStringSearcher][improved-sync-string-searcher-java] is a class implementing [IInstantStringSearcher][i-instant-string-searcher-java].**
+    1. **[ImprovedSyncStringSearcher][improved-sync-string-searcher-java] is a wrapper class that wraps another [IInstantStringSearcher][i-instant-string-searcher-java] object and on top of it, adds a synchronization mechanism (decorator pattern).**
 
 
 Please note that it is not O(1)-time-complexity but fast enough.
