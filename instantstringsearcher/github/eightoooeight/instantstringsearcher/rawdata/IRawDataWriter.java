@@ -1,6 +1,7 @@
 package github.eightoooeight.instantstringsearcher.rawdata;
 
-public interface IRawDataWriter {
+public interface IRawDataWriter
+{
     public void setDataFilepath(String dataFilepath);
     /*
      * @return Data ID of the written data

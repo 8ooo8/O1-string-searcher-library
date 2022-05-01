@@ -1,4 +1,5 @@
-module junittest {
+module junittest
+{
     requires junit;
     requires instantstringsearcher;
     exports  github.eightoooeight.instantstringsearcher.junittest;

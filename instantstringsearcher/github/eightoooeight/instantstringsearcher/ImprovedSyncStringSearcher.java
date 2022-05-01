@@ -13,14 +13,16 @@ import github.eightoooeight.instantstringsearcher.trienode.*;
 /*
  * This is a class wrapping another IInstantStringSearcher object and on top of it, add a read write synchronization mechanism.
  */
-public class ImprovedSyncStringSearcher implements IInstantStringSearcher{
-    protected ConcurrentHashMap<String, CustomReadWriteLock> _fileLocks;
-    protected static IInstantStringSearcher _baseStringSearcher;
-    protected static ImprovedSyncStringSearcher _this;
-    protected String _storagePath;
+public class ImprovedSyncStringSearcher implements IInstantStringSearcher
+{
+    protected ConcurrentHashMap<String, CustomReadWriteLock> fileLocks;
+    protected static IInstantStringSearcher baseStringSearcher;
+    protected static ImprovedSyncStringSearcher self;
+    protected String storagePath;
 
-    private ImprovedSyncStringSearcher() {
-        _fileLocks = new ConcurrentHashMap<>();
+    private ImprovedSyncStringSearcher()
+    {
+        fileLocks = new ConcurrentHashMap<>();
     }
 
     /*
@@ -28,83 +30,114 @@ public class ImprovedSyncStringSearcher implements IInstantStringSearcher{
      * The wrapped object's insertString() and searchString() methods will be used for the string insertion and search operations
      * but on top of it, a read write synchronization mechanism will be added.
      */
-    public static ImprovedSyncStringSearcher getInstance(IInstantStringSearcher baseStringSearcher) {
-        _baseStringSearcher = baseStringSearcher;
-        return Optional.ofNullable(_this).orElseGet(() -> { _this = new ImprovedSyncStringSearcher(); return _this; });
+    public static ImprovedSyncStringSearcher getInstance(IInstantStringSearcher baseStringSearcher)
+    {
+        ImprovedSyncStringSearcher.baseStringSearcher = baseStringSearcher;
+        return Optional.ofNullable(self).orElseGet(() -> self = new ImprovedSyncStringSearcher());
     }
 
-    public static ImprovedSyncStringSearcher getInstance() {
-        _baseStringSearcher = AsyncO1StringSearcher.getInstance();
-        return Optional.ofNullable(_this).orElseGet(() -> { _this = new ImprovedSyncStringSearcher(); return _this; });
+    public static ImprovedSyncStringSearcher getInstance()
+    {
+        baseStringSearcher = AsyncO1StringSearcher.getInstance();
+        return Optional.ofNullable(self).orElseGet(() -> self = new ImprovedSyncStringSearcher());
     }
 
-    public void setStoragePath(String storagePath) {
-        _storagePath = storagePath;
-        _baseStringSearcher.setStoragePath(_storagePath);
+    public void setStoragePath(String storagePath)
+    {
+        this.storagePath = storagePath;
+        baseStringSearcher.setStoragePath(storagePath);
     }
-    public String getStoragePath() { return _storagePath; }
-    public void insertString(String toInsert) {
+
+    public String getStoragePath()
+    {
+        return storagePath;
+    }
+
+    public void insertString(String toInsert)
+    {
         // get the files to lock
         List<String> filesToLock = IntStream.range(0, toInsert.length())
             .mapToObj((i) -> toInsert.substring(i))
             .collect(Collectors.toList());
 
         // lock the write locks
-        List<CustomReadWriteLock> locks = filesToLock.stream().map((v) -> _getLock(v)).collect(Collectors.toList());
+        List<CustomReadWriteLock> locks = filesToLock.stream().map((v) -> getLock(v)).collect(Collectors.toList());
         locks.forEach((v) -> v.getReadWriteLock().writeLock().lock());
 
         // write
-        _baseStringSearcher.insertString(toInsert);
+        baseStringSearcher.insertString(toInsert);
         
         // release the locks
         locks.forEach((v) -> v.getReadWriteLock().writeLock().unlock());
         filesToLock.stream()
-            .forEach((v) -> _releaseLock(v));
+            .forEach((v) -> removeLockRef(v));
     }
-    public List<String> searchString(String searchStr) {
-        CustomReadWriteLock lock = _getLock(searchStr);
+
+    public List<String> searchString(String searchStr)
+    {
+        CustomReadWriteLock lock = getLock(searchStr);
         
         // lock
         lock.getReadWriteLock().readLock().lock();
 
         // search string
-        List<String> searchResult = _baseStringSearcher.searchString(searchStr);
+        List<String> searchResult = baseStringSearcher.searchString(searchStr);
         
         // release the lock
         lock.getReadWriteLock().readLock().unlock();
-        _releaseLock(searchStr);
+        removeLockRef(searchStr);
 
         // return the search result
         return searchResult;
     }
 
-    private synchronized CustomReadWriteLock _getLock(String keychain) {
-        _fileLocks.putIfAbsent(keychain, new CustomReadWriteLock());
-        CustomReadWriteLock requestedLock = _fileLocks.get(keychain);
+    private synchronized CustomReadWriteLock getLock(String keychain)
+    {
+        fileLocks.putIfAbsent(keychain, new CustomReadWriteLock());
+        CustomReadWriteLock requestedLock = fileLocks.get(keychain);
         requestedLock.add1Ref();
         return requestedLock;
     }
 
-    private synchronized void _releaseLock(String keychain) {
-        CustomReadWriteLock requestedLock = _fileLocks.get(keychain);
+    private synchronized void removeLockRef(String keychain)
+    {
+        CustomReadWriteLock requestedLock = fileLocks.get(keychain);
         requestedLock.remove1Ref();
-        if (requestedLock.getRefNum() == 0) {
-            _fileLocks.remove(keychain);
+        if (requestedLock.getRefNum() == 0)
+        {
+            fileLocks.remove(keychain);
         }
     }
 }
 
-class CustomReadWriteLock {
-    protected ReadWriteLock _readWriteLock;
-    protected AtomicInteger _numOfRef; //number of threads referencing/using this lock
+class CustomReadWriteLock
+{
+    protected ReadWriteLock readWriteLock;
+    protected AtomicInteger numOfRef; //number of threads referencing/using this lock
 
-    protected CustomReadWriteLock() {
-        _readWriteLock = new ReentrantReadWriteLock();
-        _numOfRef = new AtomicInteger(0);
+    protected CustomReadWriteLock()
+    {
+        readWriteLock = new ReentrantReadWriteLock();
+        numOfRef = new AtomicInteger(0);
     }
 
-    protected ReadWriteLock getReadWriteLock() { return _readWriteLock; }
-    protected void add1Ref() { _numOfRef.incrementAndGet(); }
-    protected void remove1Ref() { _numOfRef.decrementAndGet(); }
-    protected int getRefNum() { return _numOfRef.get(); }
+    protected ReadWriteLock getReadWriteLock()
+    {
+        return readWriteLock;
+    }
+
+    protected void add1Ref()
+    {
+        numOfRef.incrementAndGet();
+    }
+
+    protected void remove1Ref()
+    {
+        numOfRef.decrementAndGet();
+    }
+
+    protected int getRefNum()
+    {
+        return numOfRef.get();
+    }
 }

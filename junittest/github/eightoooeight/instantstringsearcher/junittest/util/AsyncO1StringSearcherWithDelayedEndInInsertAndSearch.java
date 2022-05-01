@@ -20,54 +20,85 @@ import github.eightoooeight.instantstringsearcher.*;
  * to handle the string insertion and the string search logic,
  * i.e. it is a wrapper of github.eightoooeight.instantstringsearcher.AsyncO1StringSearcher.
  */
-public class AsyncO1StringSearcherWithDelayedEndInInsertAndSearch implements IInstantStringSearcher {
-    private IInstantStringSearcher _asyncO1StringSearcher;
-    private static AsyncO1StringSearcherWithDelayedEndInInsertAndSearch _this;
-    private long _lateTimeInMethodsInMS;
-    private List<LifeTime> _recordedLifeTimesOfInsertAndSearch; // record the lifespans to validate the synchronization
+public class AsyncO1StringSearcherWithDelayedEndInInsertAndSearch implements IInstantStringSearcher
+{
+    private IInstantStringSearcher asyncO1StringSearcher;
+    private static AsyncO1StringSearcherWithDelayedEndInInsertAndSearch self;
+    private long lateTimeInMethodsInMS;
+    private List<LifeTime> recordedLifeTimesOfInsertAndSearch; // record the lifespans to validate the synchronization
     
-    private AsyncO1StringSearcherWithDelayedEndInInsertAndSearch() {
-        _asyncO1StringSearcher = AsyncO1StringSearcher.getInstance();
-        _recordedLifeTimesOfInsertAndSearch = Collections.synchronizedList(new ArrayList<LifeTime>());
-    }
-    public static AsyncO1StringSearcherWithDelayedEndInInsertAndSearch getInstance() {
-        return Optional.ofNullable(_this).orElseGet(() -> { _this = new AsyncO1StringSearcherWithDelayedEndInInsertAndSearch(); return _this; });
+    private AsyncO1StringSearcherWithDelayedEndInInsertAndSearch()
+    {
+        asyncO1StringSearcher = AsyncO1StringSearcher.getInstance();
+        recordedLifeTimesOfInsertAndSearch = Collections.synchronizedList(new ArrayList<LifeTime>());
     }
 
-    public void setLateTimeInMethodsInMS(long lateTime) { _lateTimeInMethodsInMS = lateTime; }
-
-    public void setStoragePath(String storagePath) {
-        _asyncO1StringSearcher.setStoragePath(storagePath);
+    public static AsyncO1StringSearcherWithDelayedEndInInsertAndSearch getInstance()
+    {
+        return Optional.ofNullable(self).orElseGet(() -> self = new AsyncO1StringSearcherWithDelayedEndInInsertAndSearch());
     }
-    public String getStoragePath() { return _asyncO1StringSearcher.getStoragePath(); }
-    public void insertString(String toInsert) {
-        try {
+
+    public void setLateTimeInMethodsInMS(long lateTime)
+    {
+        lateTimeInMethodsInMS = lateTime;
+    }
+
+    public void setStoragePath(String storagePath)
+    {
+        asyncO1StringSearcher.setStoragePath(storagePath);
+    }
+
+    public String getStoragePath()
+    {
+        return asyncO1StringSearcher.getStoragePath();
+    }
+
+    public void insertString(String toInsert)
+    {
+        try
+        {
             long startTimeInMS = System.currentTimeMillis();
-            _asyncO1StringSearcher.insertString(toInsert); // perform the insert operation
+            asyncO1StringSearcher.insertString(toInsert); // perform the insert operation
             long endTimeInMS = System.currentTimeMillis();
-            _recordedLifeTimesOfInsertAndSearch.add(new LifeTime(startTimeInMS, endTimeInMS)); // record the lifespan of an insert operatoin
+            recordedLifeTimesOfInsertAndSearch.add(new LifeTime(startTimeInMS, endTimeInMS)); // record the lifespan of an insert operatoin
 
-            TimeUnit.MILLISECONDS.sleep(_lateTimeInMethodsInMS);
-        } catch (InterruptedException e) {
+            TimeUnit.MILLISECONDS.sleep(lateTimeInMethodsInMS);
+        }
+        catch (InterruptedException e)
+        {
             e.printStackTrace();
         }
     }
-    public List<String> searchString(String searchStr) {
-        List<String> result = null;
-        try {
-            long startTimeInMS = System.currentTimeMillis();
-            result = _asyncO1StringSearcher.searchString(searchStr); // perform the search operation
-            long endTimeInMS = System.currentTimeMillis();
-            _recordedLifeTimesOfInsertAndSearch.add(new LifeTime(startTimeInMS, endTimeInMS)); // record the lifespan of a search opeartion
 
-            TimeUnit.MILLISECONDS.sleep(_lateTimeInMethodsInMS);
-        } catch (InterruptedException e) {
+    public List<String> searchString(String searchStr)
+    {
+        List<String> result = null;
+        try
+        {
+            long startTimeInMS = System.currentTimeMillis();
+            result = asyncO1StringSearcher.searchString(searchStr); // perform the search operation
+            long endTimeInMS = System.currentTimeMillis();
+            recordedLifeTimesOfInsertAndSearch.add(new LifeTime(startTimeInMS, endTimeInMS)); // record the lifespan of a search opeartion
+
+            TimeUnit.MILLISECONDS.sleep(lateTimeInMethodsInMS);
+        }
+        catch (InterruptedException e)
+        {
             e.printStackTrace();
-        } finally {
+        }
+        finally
+        {
             return result;
         }
     }
 
-    public List<LifeTime> getLifeTimesOfInsertAndSearch() { return _recordedLifeTimesOfInsertAndSearch; }
-    public void clearRecordedLifeTimesOfInsertAndSearch() { _recordedLifeTimesOfInsertAndSearch.clear(); }
+    public List<LifeTime> getLifeTimesOfInsertAndSearch()
+    {
+        return recordedLifeTimesOfInsertAndSearch;
+    }
+    
+    public void clearRecordedLifeTimesOfInsertAndSearch()
+    {
+        recordedLifeTimesOfInsertAndSearch.clear();
+    }
 }

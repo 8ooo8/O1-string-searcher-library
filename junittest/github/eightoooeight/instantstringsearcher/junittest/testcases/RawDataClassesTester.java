@@ -15,36 +15,41 @@ import java.nio.file.Files;
 import java.io.IOException;
 import java.util.*;
 
-public class RawDataClassesTester extends TestCase {
-    protected static String _rawDataFilepath;
+public class RawDataClassesTester extends TestCase
+{
+    protected static String rawDataFilepath;
 
     @Before
-    public void setUp() {
-        _rawDataFilepath = "build/data/rawData.txt";
-        FileDeleter.deleteFileIfExists(_rawDataFilepath);
+    public void setUp()
+    {
+        rawDataFilepath = "build/data/rawData.txt";
+        FileDeleter.deleteFileIfExists(rawDataFilepath);
     }
 
     @Test
-    public void testRawDataReaderWriter() {
+    public void testRawDataReaderWriter()
+    {
         List<String> rawData = Arrays.asList(new String[]{"Hi, this is Jack.", "Nice to meet you. I am Sarah.", "You are so pretty, Sarah."});
-        HashMap<String, String> rawDataDict = _writeRawData(rawData);
-        rawDataDict.forEach((dataID, dataValue) -> assertEquals(_readRawData(dataID), dataValue));
+        HashMap<String, String> rawDataDict = writeRawData(rawData);
+        rawDataDict.forEach((dataID, dataValue) -> assertEquals(readRawData(dataID), dataValue));
     }
 
     /*
      * @return HashMap<data-ID, data-value>
      */
-    private HashMap<String, String> _writeRawData(List<String> rawData) {
+    private HashMap<String, String> writeRawData(List<String> rawData)
+    {
         IRawDataWriter rawDataWriter = RawDataWriter.getInstance();
-        rawDataWriter.setDataFilepath(_rawDataFilepath);
+        rawDataWriter.setDataFilepath(rawDataFilepath);
         HashMap<String, String> result = new HashMap<>();
         rawData.forEach(dataPiece -> result.put(rawDataWriter.write(dataPiece), dataPiece));
         return result;
     }
 
-    private String _readRawData(String dataID) {
+    private String readRawData(String dataID)
+    {
         IRawDataReader rawDataReader = new RawDataReader();
-        rawDataReader.setDataFilepath(_rawDataFilepath);
+        rawDataReader.setDataFilepath(rawDataFilepath);
         return rawDataReader.read(dataID);
     }
 }

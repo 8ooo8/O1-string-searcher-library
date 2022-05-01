@@ -1,7 +1,16 @@
 package github.eightoooeight.instantstringsearcher.trienode;
 
-public class TrieNodeAndFilepathMapper implements ITrieNodeAndFilepathMapper{
-    protected String _storagePath;
-    public void setStoragePath(String storagePath) { _storagePath = storagePath; }
-    public String getNodeFilepath(String nodeKeychain) { return _storagePath + "/" + nodeKeychain + ".txt"; }
+public class TrieNodeAndFilepathMapper implements ITrieNodeAndFilepathMapper
+{
+    protected String storagePath;
+
+    public void setStoragePath(String storagePath)
+    {
+        this.storagePath = storagePath;
+    }
+
+    public String getNodeFilepath(String nodeKeychain)
+    {
+        return storagePath + "/" + nodeKeychain + ".txt";
+    }
 }

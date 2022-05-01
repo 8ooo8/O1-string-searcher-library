@@ -14,5 +14,4 @@ import org.junit.runners.Suite;
     ImprovedSyncStringSearcherSyncTester.class
 })
 
-public class JUnitTestSuite {   
-}
+public class JUnitTestSuite {}
