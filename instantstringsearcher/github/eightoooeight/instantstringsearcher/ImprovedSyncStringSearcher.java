@@ -65,12 +65,13 @@ public class ImprovedSyncStringSearcher implements IInstantStringSearcher
         locks.forEach((v) -> v.getReadWriteLock().writeLock().lock());
 
         // write
-        baseStringSearcher.insertString(toInsert);
-        
-        // release the locks
-        locks.forEach((v) -> v.getReadWriteLock().writeLock().unlock());
-        filesToLock.stream()
-            .forEach((v) -> removeLockRef(v));
+        try {
+            baseStringSearcher.insertString(toInsert);
+        } finally {
+            // release the locks
+            locks.forEach((v) -> v.getReadWriteLock().writeLock().unlock());
+            filesToLock.stream().forEach((v) -> removeLockRef(v));
+        }
     }
 
     public List<String> searchString(String searchStr)
@@ -81,11 +82,14 @@ public class ImprovedSyncStringSearcher implements IInstantStringSearcher
         lock.getReadWriteLock().readLock().lock();
 
         // search string
-        List<String> searchResult = baseStringSearcher.searchString(searchStr);
-        
-        // release the lock
-        lock.getReadWriteLock().readLock().unlock();
-        removeLockRef(searchStr);
+        List<String> searchResult;
+        try {
+             searchResult = baseStringSearcher.searchString(searchStr);
+        } finally {
+            // release the lock
+            lock.getReadWriteLock().readLock().unlock();
+            removeLockRef(searchStr);
+        }
 
         // return the search result
         return searchResult;

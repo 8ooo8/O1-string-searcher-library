@@ -16,8 +16,8 @@ public class LifeTime
 
     public LifeTime(long startTimeInMS, long endTimeInMS)
     {
-        startTimeInMS = new AtomicLong(startTimeInMS);
-        endTimeInMS = new AtomicLong(endTimeInMS);
+        this.startTimeInMS = new AtomicLong(startTimeInMS);
+        this.endTimeInMS = new AtomicLong(endTimeInMS);
     }
 
     public long getStartTimeInMS()
@@ -32,11 +32,11 @@ public class LifeTime
 
     public void setStartTimeInMS(long startTimeInMS)
     {
-        startTimeInMS.set(startTimeInMS);
+        this.startTimeInMS.set(startTimeInMS);
     }
 
     public void setEndTimeInMS(long endTimeInMS)
     {
-        endTimeInMS.set(endTimeInMS);
+        this.endTimeInMS.set(endTimeInMS);
     }
 }
